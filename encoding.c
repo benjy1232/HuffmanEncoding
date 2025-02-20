@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     memcpy(byteArray, &treeRoot->weight, sizeof(treeRoot->weight));
     bytesWritten += sizeof(treeRoot->weight);
     // Next 8 bytes are the dict length
-    printf("dictSize: %lu\n", dictSize);
+    printf("dictSize: %llu\n", dictSize);
     memcpy(byteArray + bytesWritten, &dictSize, sizeof(dictSize));
     bytesWritten += sizeof(dictSize);
     // Start writing the encoding into the array
