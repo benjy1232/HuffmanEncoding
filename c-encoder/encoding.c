@@ -29,11 +29,10 @@ int main(int argc, char** argv) {
     }
 
     size_t asciiCharMap[INT8_MAX] = {0};
-    int max = -1;
     for (int c = fgetc(beeMovie); c != EOF; c = fgetc(beeMovie)) {
         asciiCharMap[c]++;
     }
-    int closeSuccess = fclose(beeMovie);
+    fclose(beeMovie);
 
     struct LinkedList llist = {
         .head = NULL,
@@ -98,7 +97,7 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < INT8_MAX; i++) {
         if (huffArray[i].length == 0)
             continue;
-        if (bytesWritten + sizeof(dictSize) >= BUFFER_LEN) {
+        if (bytesWritten + sizeof(huffArray[i]) >= BUFFER_LEN) {
             fwrite(byteArray, sizeof(uint8_t), bytesWritten, encodedFile);
             memset(byteArray, 0, sizeof(byteArray));
             bytesWritten = 0;
@@ -143,8 +142,8 @@ int main(int argc, char** argv) {
             }
         }
     }
-    closeSuccess = fclose(beeMovie);
+    fclose(beeMovie);
 
     fwrite(byteArray, sizeof(uint8_t), bytesWritten + 1, encodedFile);
-    closeSuccess = fclose(encodedFile);
+    fclose(encodedFile);
 }
