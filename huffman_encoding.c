@@ -14,9 +14,9 @@ struct TreeNode* buildHuffmanTree(struct LinkedList* llist) {
         return NULL;
 
     while (llist->head && llist->head->next) {
-        struct TreeNode* leftNode = llist_popfront(llist);
-        struct TreeNode* rightNode = llist_popfront(llist);
-        struct TreeNode* newNode = malloc(sizeof(struct TreeNode));
+        struct TreeNode* leftNode = (struct TreeNode*) llist_popfront(llist);
+        struct TreeNode* rightNode = (struct TreeNode*) llist_popfront(llist);
+        struct TreeNode* newNode = (struct TreeNode*) malloc(sizeof(struct TreeNode));
         if (!newNode)
             return NULL;
         newNode->character = '\0';
@@ -26,7 +26,7 @@ struct TreeNode* buildHuffmanTree(struct LinkedList* llist) {
         llist_insertUsingCompare(llist, newNode, treeNode_comparator);
     }
 
-    return llist_popfront(llist);
+    return (struct TreeNode*) llist_popfront(llist);
 }
 
 void getHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding, struct LinkedList* llist) {
@@ -51,7 +51,7 @@ void getHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncod
     }
 
     if (!root->left && !root->right) {
-        struct HuffmanEncoding* encoding = malloc(sizeof(struct HuffmanEncoding));
+        struct HuffmanEncoding* encoding = (struct HuffmanEncoding*) malloc(sizeof(struct HuffmanEncoding));
         if (!encoding) {
             fprintf(stderr, "Unable to allocate memory for encoding node\n");
             return;

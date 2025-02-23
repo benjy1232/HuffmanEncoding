@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
         if (asciiCharMap[i] == 0)
             continue;
 
-        struct TreeNode* node = malloc(sizeof(struct TreeNode));
+        struct TreeNode* node = (struct TreeNode*) malloc(sizeof(struct TreeNode));
         if (!node) {
             fprintf(stderr, "Unable to enough memory for new node");
             break;
@@ -67,23 +67,23 @@ int main(int argc, char** argv) {
 
     getHuffmanEncodings(treeRoot, &encoding, &llist);
     freeHuffmanTree(treeRoot);
-    struct HuffmanEncoding huffArray[INT8_MAX] = {0};
+    struct HuffmanEncoding huffArray[INT8_MAX] = {};
     size_t dictSize = 0;
     while (llist.head) {
-        struct HuffmanEncoding* encoding = llist_popfront(&llist);
-        huffArray[encoding->character] = *encoding;
+        struct HuffmanEncoding* encoding = (struct HuffmanEncoding*) llist_popfront(&llist);
+        huffArray[(size_t)encoding->character] = *encoding;
         dictSize += sizeof(*encoding);
         free(encoding);
     };
 
-    uint8_t byteArray[BUFFER_LEN] = {0};
+    uint8_t byteArray[BUFFER_LEN] = {};
     int32_t bytesWritten = 0;
     FILE* encodedFile = fopen(argv[2], "wb");
     // First 8 bytes are file length
     memcpy(byteArray, &treeRoot->weight, sizeof(treeRoot->weight));
     bytesWritten += sizeof(treeRoot->weight);
     // Next 8 bytes are the dict length
-    printf("dictSize: %llu\n", dictSize);
+    printf("dictSize: %lu\n", dictSize);
     memcpy(byteArray + bytesWritten, &dictSize, sizeof(dictSize));
     bytesWritten += sizeof(dictSize);
     // Start writing the encoding into the array
@@ -126,13 +126,13 @@ int main(int argc, char** argv) {
                 iter++;
                 bitsWritten = 0;
                 bytesWritten++;
+                if (iter == endIter) {
+                    fwrite(byteArray, sizeof(uint8_t), bytesWritten, encodedFile);
+                    bytesWritten = 0;
+                    iter = byteArray;
+                    memset(byteArray, 0, sizeof(byteArray));
+                }
             }
-        }
-        if (iter == endIter) {
-            fwrite(byteArray, sizeof(uint8_t), bytesWritten, encodedFile);
-            bytesWritten = 0;
-            iter = byteArray;
-            memset(byteArray, 0, sizeof(byteArray));
         }
     }
     closeSuccess = fclose(beeMovie);

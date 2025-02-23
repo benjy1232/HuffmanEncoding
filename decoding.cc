@@ -8,7 +8,6 @@
 
 static const size_t DICT_ENTRY_LEN = 16;
 static const size_t BYTE_ARRAY_LEN = 1024;
-static const size_t BITS_PER_BYTE = 8;
 
 struct BitString {
     uint64_t bitStr;
@@ -85,15 +84,14 @@ int main(int argc, char** argv) {
         std::cerr << "Need file to read" << std::endl;
         return 1;
     }
-    std::ifstream encodedFile(argv[1], std::ios::binary);
+    char* encodedFilePath = argv[1];
+    std::ifstream encodedFile(encodedFilePath, std::ios::binary);
     uint64_t uncompressedFileLen = 0;
     size_t dictLen = 0;
     if (!encodedFile.read(reinterpret_cast<char*>(&uncompressedFileLen), sizeof(uncompressedFileLen))) {
         std::cerr << "Unable to read file data" << std::endl;
         return 1;
     }
-    // Subtract because fileLen is NULL padded
-    uncompressedFileLen--;
 
     if (!encodedFile.read(reinterpret_cast<char*>(&dictLen), sizeof(dictLen))) {
         std::cerr << "Unable to read file data" << std::endl;
