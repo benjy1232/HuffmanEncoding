@@ -4,10 +4,10 @@ project(HuffmanEncoding C CXX)
 set(CMAKE_C_STANDARD 17)
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(encoding encoding.c
-        list.h
-        list.c
-        huffman_encoding.c
-        huffman_encoding.h)
+add_executable(encoding c-encoder/encoding.c
+        c-encoder/list.h
+        c-encoder/list.c
+        c-encoder/huffman_encoding.c
+        c-encoder/huffman_encoding.h)
 
-add_executable(decoding decoding.cc)
+add_executable(decoding cpp-decoder/decoding.cc)

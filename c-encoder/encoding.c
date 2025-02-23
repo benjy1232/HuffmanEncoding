@@ -19,10 +19,12 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Need to specify file to write data into");
         return 1;
     }
-    FILE* beeMovie = fopen(argv[1], "r");
+    char* originalFileName = argv[1];
+    char* encodedFileName = argv[2];
+    FILE* beeMovie = fopen(originalFileName, "r");
     if (!beeMovie) {
         fprintf(stderr, "%s: Unable to open file: %s (errno: %d)\r\n",
-		__func__, argv[1], errno);
+		__func__, originalFileName, errno);
         return 2;
     }
 
@@ -78,7 +80,13 @@ int main(int argc, char** argv) {
 
     uint8_t byteArray[BUFFER_LEN] = {};
     int32_t bytesWritten = 0;
-    FILE* encodedFile = fopen(argv[2], "wb");
+    FILE* encodedFile = fopen(encodedFileName, "wb");
+    if (!encodedFile) {
+        fprintf(stderr, "argc: %d\n", argc);
+        fprintf(stderr, "Original File: %s\n", argv[1]);
+        fprintf(stderr, "Failed to create file %s\n", encodedFileName);
+        return 1;
+    }
     // First 8 bytes are file length
     memcpy(byteArray, &treeRoot->weight, sizeof(treeRoot->weight));
     bytesWritten += sizeof(treeRoot->weight);

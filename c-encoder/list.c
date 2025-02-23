@@ -53,6 +53,7 @@ bool llist_pushfront(struct LinkedList* llist, void* data)
 	llist->head = node;
 	if (!llist->tail)
 		llist->tail = node;
+	return true;
 }
 
 void* llist_popfront(struct LinkedList* llist)
