@@ -117,15 +117,9 @@ int main(int argc, char** argv) {
         struct HuffmanEncoding he = huffArray[c];
         uint64_t bitStr = he.bitStr;
         int32_t length = he.length;
-        // v: 45 (0b101101) l: 8 , v: 19 (0b10011) l: 6
-        // MSB                     LSB
-        // 0b00101101 | 0100_11 | 01_0011 | 0000
-        // Bytes:
-        // 0x2D       | 0x4_D 0x_3 | 0
-        // Start from MSB go towards LSB
-        for (int i = 0; i < length; i++) {
+        for (int i = length - 1; i >= 0; i--) {
             // Get the highest bit in bitStr
-            uint64_t bitToSet = bitStr >> (length - i - 1) & 1;
+            uint64_t bitToSet = (bitStr >> i) & 1;
             uint32_t bitIdx = BITS_PER_BYTE - 1 - (bitsWritten % BITS_PER_BYTE);
             *iter |= bitToSet << bitIdx;
             bitsWritten++;

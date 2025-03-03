@@ -2,7 +2,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include <memory>
+#include <list>
 #include <unordered_map>
 #include <vector>
 
@@ -25,14 +25,14 @@ using BitStringMap = std::unordered_map<uint64_t, std::vector<BitStringMapEntry>
 class HuffmanDecoder {
 public:
     static const int BITS_PER_BYTE = 8;
+    static const size_t CHAR_ARRAY_LEN = 1024;
     HuffmanDecoder() = delete;
     HuffmanDecoder(const HuffmanDecoder&) = delete;
     HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMap);
 
     void decodeByteArray(const std::byte* byteArray, size_t byteArrayLen);
     bool isFinished() const { return m_BytesDecoded == m_UncompressedFileLen; }
-    std::string_view getDecodedString() const
-        { return std::string_view(m_DecodedString.get(), m_UncompressedFileLen); }
+    const std::list<std::array<char, CHAR_ARRAY_LEN>>& getDecodedStrings() const { return m_DecodedStrings; }
 private:
     bool decodeByte(const std::byte byte);
 
@@ -40,7 +40,7 @@ private:
     uint64_t     m_BytesDecoded;
     BitString    m_CurrentBitString;
     BitStringMap m_BitStringMap;
-    std::unique_ptr<char[]>  m_DecodedString;
+    std::list<std::array<char, CHAR_ARRAY_LEN>> m_DecodedStrings;
 };
 
 HuffmanDecoder::HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMap)
@@ -48,14 +48,16 @@ HuffmanDecoder::HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMa
     m_BytesDecoded(0),
     m_CurrentBitString(),
     m_BitStringMap(bitStringMap),
-    m_DecodedString(new char[fileLen]) {
+    m_DecodedStrings() {
+        m_DecodedStrings.emplace_back();
+        m_DecodedStrings.back().fill(0);
 }
 
 bool HuffmanDecoder::decodeByte(const std::byte currentByte) {
     if (isFinished()) {
         return false;
     }
-    char* decodeStringIter = m_DecodedString.get() + m_BytesDecoded;
+
     // Read from MSB to LSB
     for (int bitIdx = BITS_PER_BYTE - 1; bitIdx >= 0; bitIdx--) {
         m_CurrentBitString.bitStr <<= 1;
@@ -67,13 +69,16 @@ bool HuffmanDecoder::decodeByte(const std::byte currentByte) {
         }
         for (const auto& bitStringEntry : m_BitStringMap.at(m_CurrentBitString.bitStr)) {
             if (bitStringEntry.len == m_CurrentBitString.len) {
-                *decodeStringIter = bitStringEntry.character;
+                m_DecodedStrings.back()[m_BytesDecoded % CHAR_ARRAY_LEN] = bitStringEntry.character;
                 m_CurrentBitString.bitStr = 0;
                 m_CurrentBitString.len = 0;
-                decodeStringIter++;
                 m_BytesDecoded++;
                 if (isFinished())
                     return true;
+                if (m_BytesDecoded % 1024 == 0) {
+                    m_DecodedStrings.emplace_back();
+                    m_DecodedStrings.back().fill(0);
+                }
             }
         }
     }
@@ -136,5 +141,7 @@ int main(int argc, char** argv) {
         huffmanDecoder.decodeByteArray(reinterpret_cast<std::byte*>(byteArray.data()), byteArray.size());
     }
 
-    std::cout << huffmanDecoder.getDecodedString();
+    for (const auto& iov : huffmanDecoder.getDecodedStrings()) {
+        std::cout << iov.data();
+    }
 }

@@ -65,10 +65,10 @@ fn decode_file(encoded_buffer: &mut BufReader<fs::File>) -> i32 {
     let mut decoded_byte_buffer: Vec<u8> = vec![];
     for b in encoded_buffer.bytes() {
         let b = b.unwrap();
-        let mut i = 0;
-        while i < 8 {
+        let mut i = 7;
+        while i >= 0 {
             cbs.bit_string = cbs.bit_string << 1;
-            let bit_to_set = (b >> (7 - i)) & 1;
+            let bit_to_set = (b >> i) & 1;
             cbs.bit_string |= bit_to_set as u64;
             cbs.len += 1;
             if bit_string_map.contains_key(&cbs.bit_string) {
@@ -87,7 +87,7 @@ fn decode_file(encoded_buffer: &mut BufReader<fs::File>) -> i32 {
                     }
                 }
             }
-            i += 1;
+            i -= 1;
         }
     }
     let output = String::from_utf8(decoded_byte_buffer).unwrap();
