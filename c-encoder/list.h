@@ -21,6 +21,7 @@ struct LinkedList {
 bool llist_pushback(struct LinkedList* llist, void* data);
 void* llist_popfront(struct LinkedList* llist);
 
+/* Essentially a Priority Queue */
 bool llist_insertUsingCompare(struct LinkedList* llist, void* data, bool (*compareFunc)(void*, void*));
 
 #endif //LIST_H

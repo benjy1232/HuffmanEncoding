@@ -2,7 +2,6 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include <list>
 #include <unordered_map>
 #include <vector>
 
@@ -32,7 +31,7 @@ public:
 
     void decodeByteArray(const std::byte* byteArray, size_t byteArrayLen);
     bool isFinished() const { return m_BytesDecoded == m_UncompressedFileLen; }
-    const std::list<std::array<char, CHAR_ARRAY_LEN>>& getDecodedStrings() const { return m_DecodedStrings; }
+    const std::vector<std::array<char, CHAR_ARRAY_LEN>>& getDecodedStrings() const { return m_DecodedStrings; }
 private:
     bool decodeByte(const std::byte byte);
 
@@ -40,7 +39,7 @@ private:
     uint64_t     m_BytesDecoded;
     BitString    m_CurrentBitString;
     BitStringMap m_BitStringMap;
-    std::list<std::array<char, CHAR_ARRAY_LEN>> m_DecodedStrings;
+    std::vector<std::array<char, CHAR_ARRAY_LEN>> m_DecodedStrings;
 };
 
 HuffmanDecoder::HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMap)
@@ -142,6 +141,6 @@ int main(int argc, char** argv) {
     }
 
     for (const auto& iov : huffmanDecoder.getDecodedStrings()) {
-        std::cout << iov.data();
+        std::cout << std::string_view(iov.data(), iov.size());
     }
 }
