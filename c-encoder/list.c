@@ -1,23 +1,31 @@
-//
-// Created by bserrano on 2/15/2025.
-//
 #include "list.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-bool llist_pushback(struct LinkedList* llist, void* data)
-{
-	if (!llist)
-	{
+void llist_free(struct LinkedList* llist, void (*dataCb)(void*)) {
+    struct Node* iter = llist->head;
+
+    llist->head = NULL;
+    llist->tail = NULL;
+    while (iter) {
+        struct Node* next = iter->next;
+        if (dataCb)
+            dataCb(iter->data);
+        free(iter);
+        iter = next;
+    }
+}
+
+bool llist_pushback(struct LinkedList* llist, void* data) {
+	if (!llist) {
 		fprintf(stderr, "%s: Unable to use null llist\r\n", __func__);
 		return false;
 	}
 
 	struct Node* node = malloc(sizeof(struct Node));
-	if (!node)
-	{
+	if (!node) {
 		fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
 		return false;
 	}
@@ -29,21 +37,19 @@ bool llist_pushback(struct LinkedList* llist, void* data)
 		llist->head = node;
 	else
 		llist->tail->next = node;
+
 	llist->tail = node;
 	return true;
 }
 
-bool llist_pushfront(struct LinkedList* llist, void* data)
-{
-	if (!llist)
-	{
+bool llist_pushfront(struct LinkedList* llist, void* data) {
+	if (!llist) {
 		fprintf(stderr, "%s: Unable to use null list\r\n", __func__);
 		return false;
 	}
 
 	struct Node* node = malloc(sizeof(struct Node));
-	if (!node)
-	{
+	if (!node) {
 		fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
 		return false;
 	}
@@ -56,8 +62,7 @@ bool llist_pushfront(struct LinkedList* llist, void* data)
 	return true;
 }
 
-void* llist_popfront(struct LinkedList* llist)
-{
+void* llist_popfront(struct LinkedList* llist) {
 	if (!llist || !llist->head)
 		return NULL;
 
@@ -68,14 +73,12 @@ void* llist_popfront(struct LinkedList* llist)
 	return data;
 }
 
-bool node_insert(struct Node* node, void* data)
-{
+bool node_insert(struct Node* node, void* data) {
 	if (!node)
 		return false;
 
 	struct Node* nextNode = malloc(sizeof(struct Node));
-	if (!nextNode)
-	{
+	if (!nextNode) {
 		fprintf(stderr, "%s: Failed to allocate memory for next node\r\n", __func__);
 		return false;
 	}
@@ -85,8 +88,7 @@ bool node_insert(struct Node* node, void* data)
 	return true;
 }
 
-bool llist_insertUsingCompare(struct LinkedList* llist, void* elem, bool (*compareFunc)(void*, void*))
-{
+bool llist_insertUsingCompare(struct LinkedList* llist, void* elem, bool (*compareFunc)(void*, void*)) {
 	if (!llist)
 		return false;
 	if (!llist->head)
@@ -95,10 +97,8 @@ bool llist_insertUsingCompare(struct LinkedList* llist, void* elem, bool (*compa
 	bool inserted = false;
 	struct Node* iter = llist->head;
 	struct Node* prev = NULL;
-	while (iter)
-	{
-		if (compareFunc(iter->data, elem))
-		{
+	while (iter) {
+		if (compareFunc(iter->data, elem)) {
 			inserted = true;
 			if (iter == llist->head)
 				return llist_pushfront(llist, elem);

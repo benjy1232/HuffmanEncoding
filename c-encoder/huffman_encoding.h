@@ -13,23 +13,24 @@
 
 struct TreeNode
 {
-    char   character;
-    size_t weight;
-    struct TreeNode* left;
-    struct TreeNode* right;
+	char   character;
+	size_t weight;
+	struct TreeNode* left;
+	struct TreeNode* right;
 };
 
 struct HuffmanEncoding
 {
-    uint64_t bitStr;
-    int32_t  length;
-    char     character;
+	uint64_t bitStr;
+	int32_t  length;
+	char	 character;
 };
 
 bool treeNode_comparator(void* tn0, void* tn1);
-struct TreeNode* buildHuffmanTree(struct LinkedList* llist);
+bool buildHuffmanTree(struct LinkedList* llist, struct TreeNode** rootPtr);
 void getHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding, struct LinkedList* llist);
 void printHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding);
 void freeHuffmanTree(struct TreeNode* root);
+void freeHuffmanTreeCb(void* root);
 
 #endif //HUFFMAN_ENCODING_H

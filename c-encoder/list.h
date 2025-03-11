@@ -8,15 +8,17 @@
 #include <stdbool.h>
 
 struct Node {
-    void* data;
-    struct Node* next;
+	void* data;
+	struct Node* next;
 };
 
 struct LinkedList {
-    struct Node* head;
-    struct Node* tail;
+	struct Node* head;
+	struct Node* tail;
 };
 
+
+void llist_free(struct LinkedList* llist, void (*cb)(void*));
 
 bool llist_pushback(struct LinkedList* llist, void* data);
 void* llist_popfront(struct LinkedList* llist);
