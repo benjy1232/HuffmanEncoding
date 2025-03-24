@@ -25,21 +25,22 @@ class HuffmanDecoder {
 public:
     static const int BITS_PER_BYTE = 8;
     static const size_t CHAR_ARRAY_LEN = 1024;
+    using StringsVector = std::vector<std::array<char, CHAR_ARRAY_LEN>>;
     HuffmanDecoder() = delete;
     HuffmanDecoder(const HuffmanDecoder&) = delete;
     HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMap);
 
     void decodeByteArray(const std::byte* byteArray, size_t byteArrayLen);
     bool isFinished() const { return m_BytesDecoded == m_UncompressedFileLen; }
-    const std::vector<std::array<char, CHAR_ARRAY_LEN>>& getDecodedStrings() const { return m_DecodedStrings; }
+    const StringsVector& getDecodedStrings() const { return m_DecodedStrings; }
 private:
     bool decodeByte(const std::byte byte);
 
-    uint64_t     m_UncompressedFileLen;
-    uint64_t     m_BytesDecoded;
-    BitString    m_CurrentBitString;
-    BitStringMap m_BitStringMap;
-    std::vector<std::array<char, CHAR_ARRAY_LEN>> m_DecodedStrings;
+    uint64_t      m_UncompressedFileLen;
+    uint64_t      m_BytesDecoded;
+    BitString     m_CurrentBitString;
+    BitStringMap  m_BitStringMap;
+    StringsVector m_DecodedStrings;
 };
 
 HuffmanDecoder::HuffmanDecoder(uint64_t fileLen, const BitStringMap& bitStringMap)
@@ -140,7 +141,9 @@ int main(int argc, char** argv) {
         huffmanDecoder.decodeByteArray(reinterpret_cast<std::byte*>(byteArray.data()), byteArray.size());
     }
 
-    for (const auto& iov : huffmanDecoder.getDecodedStrings()) {
-        std::cout << std::string_view(iov.data(), iov.size());
+    for (const auto& str : huffmanDecoder.getDecodedStrings()) {
+        std::cout << str.data();
     }
+
 }
+
