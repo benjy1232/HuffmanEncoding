@@ -8,8 +8,8 @@
 #include <stdbool.h>
 
 struct Node {
-	void* data;
 	struct Node* next;
+	void* data;
 };
 
 struct LinkedList {

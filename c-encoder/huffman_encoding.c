@@ -40,7 +40,7 @@ bool buildHuffmanTree(struct LinkedList* priorityQueue, struct TreeNode** rootPt
 	return true;
 }
 
-bool getHuffmanEncodingsV2(struct TreeNode* root,
+bool getHuffmanEncodings(struct TreeNode* root,
 			   struct HuffmanEncoding* curEncoding,
 			   struct HuffmanEncoding** const begin,
 			   struct HuffmanEncoding* const end) {
@@ -51,7 +51,7 @@ bool getHuffmanEncodingsV2(struct TreeNode* root,
 	if (root->left) {
 		curEncoding->bitStr <<= 1;
 		curEncoding->length++;
-		isSuccessful = getHuffmanEncodingsV2(root->left, curEncoding, begin, end);
+		isSuccessful = getHuffmanEncodings(root->left, curEncoding, begin, end);
 		curEncoding->bitStr >>= 1;
 		curEncoding->length--;
 	}
@@ -60,7 +60,7 @@ bool getHuffmanEncodingsV2(struct TreeNode* root,
 		curEncoding->bitStr <<= 1;
 		curEncoding->bitStr |= 1;
 		curEncoding->length++;
-		isSuccessful = getHuffmanEncodingsV2(root->right, curEncoding, begin, end);
+		isSuccessful = getHuffmanEncodings(root->right, curEncoding, begin, end);
 		curEncoding->bitStr >>= 1;
 		curEncoding->length--;
 	}
@@ -76,43 +76,6 @@ bool getHuffmanEncodingsV2(struct TreeNode* root,
 		encoding->length = curEncoding->length;
 		encoding->character = root->character;
 		(*begin)++;
-	}
-	return isSuccessful;
-}
-
-bool getHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding, struct LinkedList* llist) {
-	if (!root || !llist)
-		return false;
-
-	bool isSuccessful = true;
-	if (root->left) {
-		curEncoding->bitStr <<= 1;
-		curEncoding->length++;
-		isSuccessful = getHuffmanEncodings(root->left, curEncoding, llist);
-		curEncoding->bitStr >>= 1;
-		curEncoding->length--;
-	}
-
-	if (root->right && isSuccessful) {
-		curEncoding->bitStr <<= 1;
-		curEncoding->bitStr |= 1;
-		curEncoding->length++;
-		isSuccessful = getHuffmanEncodings(root->right, curEncoding, llist);
-		curEncoding->bitStr >>= 1;
-		curEncoding->length--;
-	}
-
-	if (!root->left && !root->right) {
-		struct HuffmanEncoding* encoding = (struct HuffmanEncoding*) malloc(sizeof(struct HuffmanEncoding));
-		if (!encoding) {
-			fprintf(stderr, "Unable to allocate memory for encoding node\n");
-			return false;
-		}
-
-		encoding->bitStr = curEncoding->bitStr;
-		encoding->length = curEncoding->length;
-		encoding->character = root->character;
-		isSuccessful = llist_pushback(llist, encoding);
 	}
 	return isSuccessful;
 }
