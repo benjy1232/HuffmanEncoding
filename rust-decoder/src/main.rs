@@ -59,6 +59,7 @@ fn decode_byte(
     cbs: &mut BitString,
     bit_string_map: &HashMap<u64, Vec<BitString>>,
     decoded_bytes: &mut Vec<u8>,
+    decoded_file_len: u64
 ) {
     let mut i = 7;
     while i >= 0 {
@@ -73,6 +74,9 @@ fn decode_byte(
                     cbs.len = 0;
                     cbs.bit_string = 0;
                     decoded_bytes.push(bs.character);
+                    if decoded_bytes.len() == decoded_file_len as usize {
+                        return;
+                    }
                 }
             }
         }
@@ -81,7 +85,7 @@ fn decode_byte(
 }
 
 fn decode_file(encoded_buffer: &mut BufReader<fs::File>) -> i32 {
-    let _decoded_file_len = read_64_bytes(encoded_buffer).expect("Unable to read decoded_file_len");
+    let decoded_file_len = read_64_bytes(encoded_buffer).expect("Unable to read decoded_file_len");
     let bit_string_map = get_dict_entries(encoded_buffer);
     if bit_string_map.len() == 0 {
         return 1;
@@ -95,7 +99,7 @@ fn decode_file(encoded_buffer: &mut BufReader<fs::File>) -> i32 {
     let mut decoded_byte_list: Vec<u8> = vec![];
     for b in encoded_buffer.bytes() {
         let b = b.expect("Unable to read byte");
-        decode_byte(b, &mut cbs, &bit_string_map, &mut decoded_byte_list);
+        decode_byte(b, &mut cbs, &bit_string_map, &mut decoded_byte_list, decoded_file_len);
     }
 
     let output = String::from_utf8(decoded_byte_list).unwrap();
