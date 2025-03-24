@@ -1,6 +1,0 @@
-CompileFlags:
-  Add: 
-    - -xc++
-    - -Wall
-    - -std=c++17
-  
