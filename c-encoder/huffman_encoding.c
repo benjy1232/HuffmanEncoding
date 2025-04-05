@@ -6,7 +6,7 @@ bool treeNode_comparator(void* tn0, void* tn1) {
 	return ((struct TreeNode*)tn0)->weight > ((struct TreeNode*)tn1)->weight;
 }
 
-bool buildHuffmanTree(struct LinkedList* priorityQueue, struct TreeNode** rootPtr) {
+bool buildHuffmanTree(LinkedList* priorityQueue, struct TreeNode** rootPtr) {
 	if (!priorityQueue || !priorityQueue->head) {
 		fprintf(stderr, "Unable to go through priority queue\n");
 		return false;
@@ -40,10 +40,10 @@ bool buildHuffmanTree(struct LinkedList* priorityQueue, struct TreeNode** rootPt
 	return true;
 }
 
-bool getHuffmanEncodings(struct TreeNode* root,
-			   struct HuffmanEncoding* curEncoding,
-			   struct HuffmanEncoding** const begin,
-			   struct HuffmanEncoding* const end) {
+bool generateHuffmanEncodings(struct TreeNode* root,
+			      struct HuffmanEncoding* curEncoding,
+			      struct HuffmanEncoding** const begin,
+			      struct HuffmanEncoding* const end) {
 	if (!root || !curEncoding || !begin || !*begin || !end)
 		return false;
 
@@ -51,7 +51,7 @@ bool getHuffmanEncodings(struct TreeNode* root,
 	if (root->left) {
 		curEncoding->bitStr <<= 1;
 		curEncoding->length++;
-		isSuccessful = getHuffmanEncodings(root->left, curEncoding, begin, end);
+		isSuccessful = generateHuffmanEncodings(root->left, curEncoding, begin, end);
 		curEncoding->bitStr >>= 1;
 		curEncoding->length--;
 	}
@@ -60,7 +60,7 @@ bool getHuffmanEncodings(struct TreeNode* root,
 		curEncoding->bitStr <<= 1;
 		curEncoding->bitStr |= 1;
 		curEncoding->length++;
-		isSuccessful = getHuffmanEncodings(root->right, curEncoding, begin, end);
+		isSuccessful = generateHuffmanEncodings(root->right, curEncoding, begin, end);
 		curEncoding->bitStr >>= 1;
 		curEncoding->length--;
 	}

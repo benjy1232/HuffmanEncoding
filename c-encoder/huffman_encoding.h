@@ -27,11 +27,11 @@ struct HuffmanEncoding
 };
 
 bool treeNode_comparator(void* tn0, void* tn1);
-bool buildHuffmanTree(struct LinkedList* priorityQueue, struct TreeNode** rootPtr);
-bool getHuffmanEncodings(struct TreeNode* root,
-			   struct HuffmanEncoding* curEncoding,
-			   struct HuffmanEncoding** const begin,
-			   struct HuffmanEncoding* const end);
+bool buildHuffmanTree(LinkedList* priorityQueue, struct TreeNode** rootPtr);
+bool generateHuffmanEncodings(struct TreeNode* root,
+			      struct HuffmanEncoding* curEncoding,
+			      struct HuffmanEncoding** const begin,
+			      struct HuffmanEncoding* const end);
 
 void printHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding);
 void freeHuffmanTree(struct TreeNode* root);

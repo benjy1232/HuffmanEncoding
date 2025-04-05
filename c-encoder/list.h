@@ -12,18 +12,18 @@ struct Node {
 	void* data;
 };
 
-struct LinkedList {
+typedef struct {
 	struct Node* head;
 	struct Node* tail;
-};
+} LinkedList;
 
 
-void llist_free(struct LinkedList* llist, void (*cb)(void*));
+void llist_free(LinkedList* llist, void (*cb)(void*));
 
-bool llist_pushback(struct LinkedList* llist, void* data);
-void* llist_popfront(struct LinkedList* llist);
+bool llist_pushback(LinkedList* llist, void* data);
+void* llist_popfront(LinkedList* llist);
 
 /* Essentially a Priority Queue */
-bool llist_insertUsingCompare(struct LinkedList* llist, void* data, bool (*compareFunc)(void*, void*));
+bool llist_insertUsingCompare(LinkedList* llist, void* data, bool (*compareFunc)(void*, void*));
 
 #endif //LIST_H

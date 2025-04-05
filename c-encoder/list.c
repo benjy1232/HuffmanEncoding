@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void llist_free(struct LinkedList* llist, void (*dataCb)(void*)) {
+void llist_free(LinkedList* llist, void (*dataCb)(void*)) {
     struct Node* iter = llist->head;
 
     llist->head = NULL;
@@ -18,7 +18,7 @@ void llist_free(struct LinkedList* llist, void (*dataCb)(void*)) {
     }
 }
 
-bool llist_pushback(struct LinkedList* llist, void* data) {
+bool llist_pushback(LinkedList* llist, void* data) {
 	if (!llist) {
 		fprintf(stderr, "%s: Unable to use null llist\r\n", __func__);
 		return false;
@@ -42,7 +42,7 @@ bool llist_pushback(struct LinkedList* llist, void* data) {
 	return true;
 }
 
-bool llist_pushfront(struct LinkedList* llist, void* data) {
+bool llist_pushfront(LinkedList* llist, void* data) {
 	if (!llist) {
 		fprintf(stderr, "%s: Unable to use null list\r\n", __func__);
 		return false;
@@ -62,7 +62,7 @@ bool llist_pushfront(struct LinkedList* llist, void* data) {
 	return true;
 }
 
-void* llist_popfront(struct LinkedList* llist) {
+void* llist_popfront(LinkedList* llist) {
 	if (!llist || !llist->head)
 		return NULL;
 
@@ -88,7 +88,7 @@ bool node_insert(struct Node* node, void* data) {
 	return true;
 }
 
-bool llist_insertUsingCompare(struct LinkedList* llist, void* elem, bool (*compareFunc)(void*, void*)) {
+bool llist_insertUsingCompare(LinkedList* llist, void* elem, bool (*compareFunc)(void*, void*)) {
 	if (!llist)
 		return false;
 	if (!llist->head)
