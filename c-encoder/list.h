@@ -7,23 +7,24 @@
 
 #include <stdbool.h>
 
-struct Node {
-	struct Node* next;
-	void* data;
+struct Node
+{
+    struct Node *next;
+    void *data;
 };
 
-typedef struct {
-	struct Node* head;
-	struct Node* tail;
+typedef struct
+{
+    struct Node *head;
+    struct Node *tail;
 } LinkedList;
 
+void llist_free(LinkedList *llist, void (*cb)(void *));
 
-void llist_free(LinkedList* llist, void (*cb)(void*));
-
-bool llist_pushback(LinkedList* llist, void* data);
-void* llist_popfront(LinkedList* llist);
+bool llist_pushback(LinkedList *llist, void *data);
+void *llist_popfront(LinkedList *llist);
 
 /* Essentially a Priority Queue */
-bool llist_insertUsingCompare(LinkedList* llist, void* data, bool (*compareFunc)(void*, void*));
+bool llist_insertUsingCompare(LinkedList *llist, void *data, bool (*compareFunc)(void *, void *));
 
-#endif //LIST_H
+#endif // LIST_H

@@ -11,30 +11,28 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-struct TreeNode
+typedef struct TreeNode
 {
-	char   character;
-	size_t weight;
-	struct TreeNode* left;
-	struct TreeNode* right;
-};
+    char character;
+    size_t weight;
+    struct TreeNode *left;
+    struct TreeNode *right;
+} TreeNode;
 
-struct HuffmanEncoding
+typedef struct
 {
-	uint64_t bitStr;
-	int32_t  length;
-	char	 character;
-};
+    uint64_t bitStr;
+    int32_t length;
+    char character;
+} HuffmanEncoding;
 
-bool treeNode_comparator(void* tn0, void* tn1);
-bool buildHuffmanTree(LinkedList* priorityQueue, struct TreeNode** rootPtr);
-bool generateHuffmanEncodings(struct TreeNode* root,
-			      struct HuffmanEncoding* curEncoding,
-			      struct HuffmanEncoding** const begin,
-			      struct HuffmanEncoding* const end);
+bool treeNode_comparator(void *tn0, void *tn1);
+bool buildHuffmanTree(LinkedList *priorityQueue, TreeNode **rootPtr);
+bool generateHuffmanEncodings(TreeNode *root, HuffmanEncoding *curEncoding, HuffmanEncoding **const begin,
+                              HuffmanEncoding *const end);
 
-void printHuffmanEncodings(struct TreeNode* root, struct HuffmanEncoding* curEncoding);
-void freeHuffmanTree(struct TreeNode* root);
-void freeHuffmanTreeCb(void* root);
+void printHuffmanEncodings(TreeNode *root, HuffmanEncoding *curEncoding);
+void freeHuffmanTree(TreeNode *root);
+void freeHuffmanTreeCb(void *root);
 
-#endif //HUFFMAN_ENCODING_H
+#endif // HUFFMAN_ENCODING_H

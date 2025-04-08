@@ -4,13 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-void llist_free(LinkedList* llist, void (*dataCb)(void*)) {
-    struct Node* iter = llist->head;
+void llist_free(LinkedList *llist, void (*dataCb)(void *))
+{
+    struct Node *iter = llist->head;
 
     llist->head = NULL;
     llist->tail = NULL;
-    while (iter) {
-        struct Node* next = iter->next;
+    while (iter)
+    {
+        struct Node *next = iter->next;
         if (dataCb)
             dataCb(iter->data);
         free(iter);
@@ -18,103 +20,115 @@ void llist_free(LinkedList* llist, void (*dataCb)(void*)) {
     }
 }
 
-bool llist_pushback(LinkedList* llist, void* data) {
-	if (!llist) {
-		fprintf(stderr, "%s: Unable to use null llist\r\n", __func__);
-		return false;
-	}
+bool llist_pushback(LinkedList *llist, void *data)
+{
+    if (!llist)
+    {
+        fprintf(stderr, "%s: Unable to use null llist\r\n", __func__);
+        return false;
+    }
 
-	struct Node* node = malloc(sizeof(struct Node));
-	if (!node) {
-		fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
-		return false;
-	}
+    struct Node *node = malloc(sizeof(struct Node));
+    if (!node)
+    {
+        fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
+        return false;
+    }
 
-	node->data = data;
-	node->next = NULL;
+    node->data = data;
+    node->next = NULL;
 
-	if (!llist->head)
-		llist->head = node;
-	else
-		llist->tail->next = node;
+    if (!llist->head)
+        llist->head = node;
+    else
+        llist->tail->next = node;
 
-	llist->tail = node;
-	return true;
+    llist->tail = node;
+    return true;
 }
 
-bool llist_pushfront(LinkedList* llist, void* data) {
-	if (!llist) {
-		fprintf(stderr, "%s: Unable to use null list\r\n", __func__);
-		return false;
-	}
+bool llist_pushfront(LinkedList *llist, void *data)
+{
+    if (!llist)
+    {
+        fprintf(stderr, "%s: Unable to use null list\r\n", __func__);
+        return false;
+    }
 
-	struct Node* node = malloc(sizeof(struct Node));
-	if (!node) {
-		fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
-		return false;
-	}
+    struct Node *node = malloc(sizeof(struct Node));
+    if (!node)
+    {
+        fprintf(stderr, "%s: Failed to allocate new node\r\n", __func__);
+        return false;
+    }
 
-	node->data = data;
-	node->next = llist->head;
-	llist->head = node;
-	if (!llist->tail)
-		llist->tail = node;
-	return true;
+    node->data = data;
+    node->next = llist->head;
+    llist->head = node;
+    if (!llist->tail)
+        llist->tail = node;
+    return true;
 }
 
-void* llist_popfront(LinkedList* llist) {
-	if (!llist || !llist->head)
-		return NULL;
+void *llist_popfront(LinkedList *llist)
+{
+    if (!llist || !llist->head)
+        return NULL;
 
-	struct Node* node = llist->head;
-	llist->head = llist->head->next;
-	void* data = node->data;
-	free(node);
-	return data;
+    struct Node *node = llist->head;
+    llist->head = llist->head->next;
+    void *data = node->data;
+    free(node);
+    return data;
 }
 
-bool node_insert(struct Node* node, void* data) {
-	if (!node)
-		return false;
+bool node_insert(struct Node *node, void *data)
+{
+    if (!node)
+        return false;
 
-	struct Node* nextNode = malloc(sizeof(struct Node));
-	if (!nextNode) {
-		fprintf(stderr, "%s: Failed to allocate memory for next node\r\n", __func__);
-		return false;
-	}
-	nextNode->next = node->next;
-	node->next = nextNode;
-	nextNode->data = data;
-	return true;
+    struct Node *nextNode = malloc(sizeof(struct Node));
+    if (!nextNode)
+    {
+        fprintf(stderr, "%s: Failed to allocate memory for next node\r\n", __func__);
+        return false;
+    }
+    nextNode->next = node->next;
+    node->next = nextNode;
+    nextNode->data = data;
+    return true;
 }
 
-bool llist_insertUsingCompare(LinkedList* llist, void* elem, bool (*compareFunc)(void*, void*)) {
-	if (!llist)
-		return false;
-	if (!llist->head)
-		return llist_pushback(llist, elem);
+bool llist_insertUsingCompare(LinkedList *llist, void *elem, bool (*compareFunc)(void *, void *))
+{
+    if (!llist)
+        return false;
+    if (!llist->head)
+        return llist_pushback(llist, elem);
 
-	bool inserted = false;
-	struct Node* iter = llist->head;
-	struct Node* prev = NULL;
-	while (iter) {
-		if (compareFunc(iter->data, elem)) {
-			inserted = true;
-			if (iter == llist->head)
-				return llist_pushfront(llist, elem);
-			if (!node_insert(prev, elem))
-				return false;
-			break;
-		}
-		prev = iter;
-		iter = iter->next;
-	}
+    bool inserted = false;
+    struct Node *iter = llist->head;
+    struct Node *prev = NULL;
+    while (iter)
+    {
+        if (compareFunc(iter->data, elem))
+        {
+            inserted = true;
+            if (iter == llist->head)
+                return llist_pushfront(llist, elem);
+            if (!node_insert(prev, elem))
+                return false;
+            break;
+        }
+        prev = iter;
+        iter = iter->next;
+    }
 
-	if (llist->tail->next != NULL)
-		llist->tail = llist->tail->next;
+    if (llist->tail->next != NULL)
+        llist->tail = llist->tail->next;
 
-	if (!inserted)
-		return llist_pushback(llist, elem);
+    if (!inserted)
+        return llist_pushback(llist, elem);
 
-	return true;
+    return true;
 }
